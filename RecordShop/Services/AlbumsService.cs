@@ -6,6 +6,7 @@ namespace RecordShop.Services
     public interface IAlbumsService
     {
         List<AlbumDTO> GetAllAlbums();
+        public AlbumDTO GetAlbumById(int id);
     }
     public class AlbumsService : IAlbumsService
     {
@@ -23,9 +24,15 @@ namespace RecordShop.Services
             return albumInfo;
                                                      
         }
-        public Album GetAlbumByID(int id)
+        public AlbumDTO GetAlbumById(int id)
         {
-            return null;
+            var album =_albumsRepository.FindAlbumById(id);
+        
+
+            if (album == null)            
+                throw new RecordShopException(ErrorStatus.Not_Found, $"Sorry, Album with {id} Not Found");
+            
+            return createAlbumDTO(album);
         }
 
         public Album AddAlbum(AlbumDTO album)

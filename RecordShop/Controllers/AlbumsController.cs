@@ -17,24 +17,41 @@ namespace RecordShop.Controllers
         [HttpGet]
         public IActionResult GetAllAlbums()
         {
+            List<AlbumDTO> albums = null;
             try
             {
-                var albums = _albumsService.GetAllAlbums();
-                if (!albums.Any())
-                {
-                    return NotFound("No Albums Found.");
-                }
-                return Ok(albums);
+                albums = _albumsService.GetAllAlbums();
+
             }
-            catch (Exception ex)
+            catch (RecordShopException ex)
             {
-                return StatusCode(500, new { message = "An unexpected error occurred. Please try again later." });
+                if (ex.Status == ErrorStatus.Not_Found)
+                    return NotFound($"Albums not found");
+                if (ex.Status == ErrorStatus.Internal_Server_Error)
+                    return NotFound("An unexpected error occurred. Please try again later.");
+
             }
+            return Ok(albums);
         }
+            
         [HttpGet("{id}")]
         public IActionResult GetAlbum(int id)
         {
-            return null;
+            AlbumDTO album = null;
+            try
+            {
+                album = _albumsService.GetAlbumById(id);                
+                
+            }
+            catch (RecordShopException ex)
+            {
+                if (ex.Status == ErrorStatus.Not_Found)
+                    return NotFound($"Album with id {id} not found");
+                if (ex.Status == ErrorStatus.Internal_Server_Error)
+                    return NotFound("An unexpected error occurred. Please try again later.");
+
+            }   
+            return Ok(album);      
         }
         [HttpPost]
         public IActionResult PostAlbum(Album album)

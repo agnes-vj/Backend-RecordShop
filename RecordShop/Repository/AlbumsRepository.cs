@@ -6,6 +6,7 @@ namespace RecordShop.Repository
     public interface IAlbumsRepository
     {
         public IEnumerable<Album> GetAllAlbums();
+        public Album FindAlbumById(int id);
 
     }
     public class AlbumsRepository : IAlbumsRepository
@@ -18,13 +19,23 @@ namespace RecordShop.Repository
 
         public IEnumerable<Album> GetAllAlbums()
         {
-            return _dbContext.Albums
-                             .Include(album => album.AlbumArtist);                             
+            IEnumerable<Album> albums;
+            try
+            {
+               albums = _dbContext.Albums
+                                  .Include(album => album.AlbumArtist);
+            }
+            catch (Exception ex)
+            {
+                throw new RecordShopException(ErrorStatus.Internal_Server_Error,ex.Message);
+            }
+            return albums;
+                                            
         }
 
         public Album FindAlbumById(int id)
         {
-            return null;
+            return _dbContext.Albums.Find(id);
         }
         public Album CreateAlbums(AlbumDTO albumDTO)
         {
