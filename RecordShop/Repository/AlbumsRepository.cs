@@ -19,8 +19,7 @@ namespace RecordShop.Repository
         public IEnumerable<Album> GetAllAlbums()
         {
             return _dbContext.Albums
-                             .Include(album => album.AlbumArtist)
-                             .ToList();
+                             .Include(album => album.AlbumArtist);                             
         }
 
         public Album FindAlbumById(int id)
