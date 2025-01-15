@@ -26,10 +26,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="ControllerTest\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\RecordShop\RecordShop.csproj" />
   </ItemGroup>
 

@@ -23,6 +23,22 @@ namespace RecordShop.Repository
                              .ToList();
         }
 
+        public Album FindAlbumById(int id)
+        {
+            return null;
+        }
+        public Album CreateAlbums(AlbumDTO albumDTO)
+        {
+            return null;
+        }
+        public Album UpdateAlbumById(int id)
+        {
+            return null;
+        }
+        public Album DeleteAlbumById(int id)
+        {
+            return null;
+        }
     }
 
 }
