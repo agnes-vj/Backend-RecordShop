@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.11.35312.102
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RecordShop", "RecordShop.csproj", "{6DC9D3D5-0310-4959-8F25-B5998364D332}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestsRecordShop", "..\RecordStoreTests\TestsRecordShop.csproj", "{A5705E31-3D0A-430A-897D-6800E0DF755E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6DC9D3D5-0310-4959-8F25-B5998364D332}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6DC9D3D5-0310-4959-8F25-B5998364D332}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6DC9D3D5-0310-4959-8F25-B5998364D332}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6DC9D3D5-0310-4959-8F25-B5998364D332}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A5705E31-3D0A-430A-897D-6800E0DF755E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A5705E31-3D0A-430A-897D-6800E0DF755E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A5705E31-3D0A-430A-897D-6800E0DF755E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A5705E31-3D0A-430A-897D-6800E0DF755E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {D2BC4B55-828E-4563-A76F-FA86D872C6C9}
+	EndGlobalSection
+EndGlobal
