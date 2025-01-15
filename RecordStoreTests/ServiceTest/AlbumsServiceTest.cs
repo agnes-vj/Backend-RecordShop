@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using FluentAssertions;
+using System.Reflection;
 
 namespace TestsRecordShop.ServiceTest
 {
@@ -86,6 +87,22 @@ namespace TestsRecordShop.ServiceTest
 
             //Assert
             _mockAlbumsRepository.Verify(repo => repo.GetAllAlbums(),Times.Once);
+        }
+        [Test]
+        public void createAlbumDTO_Returns_Correct_AlbumDTO()
+        {
+            //Arrange
+            Album albumParameter = albums[0];
+            AlbumDTO expectedAlbumDTO = expected[0];
+            //Act
+            var result = typeof(AlbumsService).GetMethod("createAlbumDTO", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(_albumsService, new Object[] { albumParameter });
+
+            //Assert
+            Assert.That(result, Is.InstanceOf<AlbumDTO>());
+            result.Should().BeEquivalentTo(expectedAlbumDTO);
+
+
+
         }
     }
 }
