@@ -50,5 +50,34 @@ namespace TestsRecordShop.ControllerTest
             Assert.That(result.StatusCode, Is.EqualTo(200));
 
         }
+        [Test]
+        public void GetAllAlbums_returns_500_StatusCode()
+        {
+            //Arrange
+            _mockAlbumsService.Setup(service => service.GetAllAlbums()).Throws(new Exception("Can not connect to Server"));
+
+            //Act
+            var result = _albumsController.GetAllAlbums() as ObjectResult;
+
+            //Assert
+            Assert.That(result, Is.TypeOf<ObjectResult>());
+            Assert.That(result.StatusCode, Is.EqualTo(500));
+
+        }
+        [Test]
+        public void GetAllAlbums_returns_NOTFOUND_StatusCode()
+        {
+            //Arrange
+            _mockAlbumsService.Setup(service => service.GetAllAlbums()).Returns(new List<AlbumDTO>());
+
+            //Act
+            var result = _albumsController.GetAllAlbums() as ObjectResult;
+
+            //Assert
+            Assert.That(result, Is.TypeOf<NotFoundObjectResult>());
+            Assert.That(result.StatusCode, Is.EqualTo(404));
+            Assert.That(result.Value as dynamic, Is.EqualTo("No Albums Found."));
+        }
+
     }
 }
