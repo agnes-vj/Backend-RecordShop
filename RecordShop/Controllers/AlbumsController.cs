@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using RecordShop.Services;
 using RecordShop.Model;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 
 namespace RecordShop.Controllers
 {
@@ -17,58 +18,86 @@ namespace RecordShop.Controllers
         [HttpGet]
         public IActionResult GetAllAlbums()
         {
-            List<AlbumDTO> albums = null;
-            try
+            var response = _albumsService.GetAllAlbums();
+            List<AlbumDTO> albums = response.albumDTOs;
+            return response.status switch
             {
-                albums = _albumsService.GetAllAlbums();
-
-            }
-            catch (RecordShopException ex)
-            {
-                if (ex.Status == ErrorStatus.Not_Found)
-                    return NotFound($"Albums not found");
-                if (ex.Status == ErrorStatus.Internal_Server_Error)
-                    return NotFound("An unexpected error occurred. Please try again later.");
-
-            }
-            return Ok(albums);
+                ExecutionStatus.SUCCESS => Ok(albums),
+                ExecutionStatus.INTERNAL_SERVER_ERROR => StatusCode(500, "Internal Server Error. Try again Later"),
+                ExecutionStatus.NOT_FOUND => NotFound("No Albums Found"),
+                _ => StatusCode(500, "Internal Server Error. Try again Later")
+            };
         }
             
         [HttpGet("{id}")]
         public IActionResult GetAlbum(int id)
         {
-            AlbumDTO album = null;
-            try
-            {
-                album = _albumsService.GetAlbumById(id);                
-                
-            }
-            catch (RecordShopException ex)
-            {
-                if (ex.Status == ErrorStatus.Not_Found)
-                    return NotFound($"Album with id {id} not found");
-                if (ex.Status == ErrorStatus.Internal_Server_Error)
-                    return NotFound("An unexpected error occurred. Please try again later.");
 
-            }   
-            return Ok(album);      
+            var response = _albumsService.GetAlbumById(id);
+            AlbumDTO album = response.albumDTO;
+            return response.status switch
+            {
+                ExecutionStatus.SUCCESS => Ok(album),
+                ExecutionStatus.INTERNAL_SERVER_ERROR => StatusCode(500, "Internal Server Error. Try again Later"),
+                ExecutionStatus.NOT_FOUND => NotFound("No Albums Found"),
+                _ => StatusCode(500, "Internal Server Error. Try again Later")
+            };
+
         }
         [HttpPost]
-        public IActionResult PostAlbum(Album album)
+        public IActionResult PostAlbum([FromBody] AlbumDTO albumDTO)
         {
-            return null;
+            if (!ModelState.IsValid)
+            {
+                foreach (var key in ModelState.Keys)
+                {
+                    var errors = ModelState[key].Errors;
+                    foreach (var error in errors)
+                    {
+                        Console.WriteLine(error.ErrorMessage);
+                    }
+                }
+                return BadRequest();
+            }
+            var response = _albumsService.AddAlbum(albumDTO);
+            AlbumDTO album = response.albumDTO;
+            return response.status switch
+            {
+                ExecutionStatus.SUCCESS => Ok(album),
+                ExecutionStatus.INTERNAL_SERVER_ERROR => StatusCode(500, "Internal Server Error. Try again Later"),
+                ExecutionStatus.ALREADY_EXISTS => BadRequest("Album Already Exists."),
+                ExecutionStatus.ARTIST_NOT_FOUND => NotFound("Artist Not Found"),
+                _ => StatusCode(500, "Internal Server Error. Try again Later")
+            };
         }
 
-        [HttpPatch("{id}")]
-        public IActionResult UpdateAlbum(int id)
+        [HttpPut("{id}")]
+        public IActionResult PutAlbum(int id, AlbumDTO albumDTO)
         {
-            return null;
+            var response = _albumsService.ReplaceAlbum(id, albumDTO);
+            AlbumDTO album = response.albumDTO;
+            return response.status switch
+            {
+                ExecutionStatus.SUCCESS => Ok(album),
+                ExecutionStatus.INTERNAL_SERVER_ERROR => StatusCode(500, "Internal Server Error. Try again Later"),
+                ExecutionStatus.NOT_FOUND => NotFound("Album Not Exists."),
+                ExecutionStatus.ARTIST_NOT_FOUND => NotFound("Album Artist Not Exists."),
+                _ => StatusCode(500, "Internal Server Error. Try again Later")
+            };
         }
 
         [HttpDelete("{id}")]
         public IActionResult DeleteAlbum(int id)
         {
-            return null;
+            var response = _albumsService.DeleteAlbum(id);
+            
+            return response switch
+            {
+                ExecutionStatus.SUCCESS => Ok(),
+                ExecutionStatus.INTERNAL_SERVER_ERROR => StatusCode(500, "Internal Server Error. Try again Later"),
+                ExecutionStatus.NOT_FOUND => NotFound("Album does not exist."),
+                _ => StatusCode(500, "Internal Server Error. Try again Later")
+            };
         }
 
     }

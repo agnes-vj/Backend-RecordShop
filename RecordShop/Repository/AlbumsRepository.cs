@@ -5,8 +5,13 @@ namespace RecordShop.Repository
 {
     public interface IAlbumsRepository
     {
-        public IEnumerable<Album> GetAllAlbums();
-        public Album FindAlbumById(int id);
+        public List<Album> GetAllAlbums();
+        public Album? FindAlbumById(int id);
+        public Album? FindAlbumByTitleAndArtist(string title, string artistName);
+        public Album CreateAlbum(Album album);
+        public Album UpdateAlbum(Album album);
+        public Album ReplaceAlbum(Album newAlbum);
+        public void DeleteAlbum(Album album);
 
     }
     public class AlbumsRepository : IAlbumsRepository
@@ -17,37 +22,44 @@ namespace RecordShop.Repository
             _dbContext = dbContext;
         }
 
-        public IEnumerable<Album> GetAllAlbums()
+        public List<Album> GetAllAlbums()
         {
-            IEnumerable<Album> albums;
-            try
-            {
-               albums = _dbContext.Albums
-                                  .Include(album => album.AlbumArtist);
-            }
-            catch (Exception ex)
-            {
-                throw new RecordShopException(ErrorStatus.Internal_Server_Error,ex.Message);
-            }
-            return albums;
-                                            
+            return _dbContext.Albums
+                             .Include(album => album.AlbumArtist)
+                             .ToList();     
         }
 
-        public Album FindAlbumById(int id)
+        public Album? FindAlbumById(int id)
         {
-            return _dbContext.Albums.Find(id);
+            return _dbContext.Albums.Include(album => album.AlbumArtist).FirstOrDefault(album => album.Id == id);
         }
-        public Album CreateAlbums(AlbumDTO albumDTO)
+
+        public Album? FindAlbumByTitleAndArtist(string title, string artistName)
         {
-            return null;
+            return _dbContext.Albums.FirstOrDefault(album => (album.Title == title && album.AlbumArtist.Name == artistName));
         }
-        public Album UpdateAlbumById(int id)
-        {
-            return null;
+        public Album CreateAlbum(Album album)
+        {           
+            _dbContext.Albums.Add(album);
+            _dbContext.SaveChanges();
+            return album;
         }
-        public Album DeleteAlbumById(int id)
+        public Album ReplaceAlbum(Album albumWithNewValues)
         {
-            return null;
+            _dbContext.Update(albumWithNewValues);
+            _dbContext.SaveChanges();
+
+            return albumWithNewValues;
+        }
+        public void DeleteAlbum(Album album)
+        {
+            _dbContext.Albums.Remove(album);
+            _dbContext.SaveChanges();
+        }
+
+        public Album UpdateAlbum(Album album)
+        {
+            throw new NotImplementedException();
         }
     }
 

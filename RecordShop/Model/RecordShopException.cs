@@ -2,9 +2,9 @@
 {
     public class RecordShopException : Exception
     {
-        public ErrorStatus Status { get; }
+        public ExecutionStatus Status { get; }
 
-        public RecordShopException(ErrorStatus status, string message)
+        public RecordShopException(ExecutionStatus status, string message)
             : base(message)
         {
             Status = status;

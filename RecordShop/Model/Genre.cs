@@ -2,11 +2,12 @@
 {
     public enum Genre
     {
-        Rock,
-        Pop,
-        Jazz,
-        Classical,
-        HipHop,
-        Country
+        ROCK,
+        POP,
+        JAZZ,
+        CLASSICAL,
+        HIPHOP,
+        COUNTRY,
+        UNKNOWN
     }
 }

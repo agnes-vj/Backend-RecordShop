@@ -36,15 +36,15 @@ namespace TestsRecordShop.ServiceTest
             albums = new()
                 {
                    new Album
-                   { Id = 1, Title = "Abbey Road", ArtistId = 1, AlbumArtist = artists[0], MusicGenre = Genre.Rock, ReleaseYear = 1969, Stock = 10 },
+                   { Id = 1, Title = "Abbey Road", ArtistId = 1, AlbumArtist = artists[0], MusicGenre = Genre.ROCK, ReleaseYear = 1969, Stock = 10 },
                     new Album
-                   { Id = 2, Title = "Let It Be", MusicGenre = Genre.Rock, AlbumArtist = artists[0], ReleaseYear = 1970, Stock = 40, ArtistId = 1 },
+                   { Id = 2, Title = "Let It Be", MusicGenre = Genre.ROCK, AlbumArtist = artists[0], ReleaseYear = 1970, Stock = 40, ArtistId = 1 },
                    new Album
-                   { Id = 3, Title = "1989", ArtistId = 2, AlbumArtist = artists[1], MusicGenre = Genre.Pop,ReleaseYear = 2014, Stock = 15},
+                   { Id = 3, Title = "1989", ArtistId = 2, AlbumArtist = artists[1], MusicGenre = Genre.POP,ReleaseYear = 2014, Stock = 15},
                    new Album
-                    { Id = 4, Title = "Thriller", ArtistId = 3, AlbumArtist = artists[2], MusicGenre = Genre.Pop,ReleaseYear = 1982 ,Stock = 10},
+                    { Id = 4, Title = "Thriller", ArtistId = 3, AlbumArtist = artists[2], MusicGenre = Genre.POP,ReleaseYear = 1982 ,Stock = 10},
                    new Album
-                   { Id = 5, Title = "Fearless", ArtistId = 2, AlbumArtist = artists[1], MusicGenre = Genre.Country, ReleaseYear = 2008, Stock = 55 }
+                   { Id = 5, Title = "Fearless", ArtistId = 2, AlbumArtist = artists[1], MusicGenre = Genre.COUNTRY, ReleaseYear = 2008, Stock = 55 }
                 };
 
             expected = new List<AlbumDTO>
@@ -100,9 +100,31 @@ namespace TestsRecordShop.ServiceTest
             //Assert
             Assert.That(result, Is.InstanceOf<AlbumDTO>());
             result.Should().BeEquivalentTo(expectedAlbumDTO);
+        }
+        [Test]
+        public void GetAlbumById_Returns_AlbumDTO()
+        {
+            //Arrange
+            _mockAlbumsRepository.Setup(repo => repo.FindAlbumById(1)).Returns(albums[0]);
 
+            //Act
+            var result = _albumsService.GetAlbumById(1);
 
+            //Assert
+            result.Should().BeEquivalentTo(expected[0]);
+        }
+        [Test]
+        public void GetAlbumById_calls_Repo_Once()
+        {
+            //Arrange
 
+            _mockAlbumsRepository.Setup(repo => repo.FindAlbumById(1)).Returns(albums[0]);
+
+            //Act
+            var result = _albumsService.GetAlbumById(1);
+
+            //Assert
+            _mockAlbumsRepository.Verify(repo => repo.FindAlbumById(1), Times.Once);
         }
     }
 }

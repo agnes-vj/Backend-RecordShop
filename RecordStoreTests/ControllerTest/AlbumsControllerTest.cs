@@ -40,7 +40,8 @@ namespace TestsRecordShop.ControllerTest
         public void GetAllAlbums_returns_200_StatusCode()
         {
             //Arrange
-            _mockAlbumsService.Setup(service => service.GetAllAlbums()).Returns(expected);
+            var returnTuple = (ExecutionStatus.SUCCESS, expected);
+            _mockAlbumsService.Setup(service => service.GetAllAlbums()).Returns(returnTuple);
 
             //Act
             var result = _albumsController.GetAllAlbums() as ObjectResult;
