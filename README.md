@@ -38,6 +38,7 @@ Before running the project, ensure the following are installed:
 ### Example Endpoints
 - **GET /api/albums**: Retrieve all albums.
 - **GET /api/albums/id**: Retrieve an albums by it's id.
+- **GET /api/albums/filter?artist=The%20Beatles&genre=0**: Filter an albums by it's Title/Artist/Genre/ReleaseYear.
 - **POST /api/albums**: Add a new albums.
 - **PATCH /api/albums/id**: Update album details.
 - **DELETE /api/albums/id**: Delete an album.
