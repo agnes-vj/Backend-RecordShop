@@ -10,7 +10,8 @@ namespace RecordShop.Services
         (ExecutionStatus status, AlbumDTO? albumDTO) AddAlbum(AlbumDTO albumDTO);
         (ExecutionStatus status, AlbumDTO albumDTO) UpdateAlbum(AlbumDTO albumDTO);
         (ExecutionStatus status, AlbumDTO albumDTO) ReplaceAlbum(int id,AlbumDTO albumDTO);
-        public ExecutionStatus  DeleteAlbum(int id);
+        ExecutionStatus  DeleteAlbum(int id);
+        (ExecutionStatus status, List<AlbumDTO>? albumDTOs) GetFilteredAlbums(AlbumsFilter filter);
     }
     public class AlbumsService : IAlbumsService
     {
@@ -62,8 +63,28 @@ namespace RecordShop.Services
                 return (ExecutionStatus.INTERNAL_SERVER_ERROR, null);
             }
         }
+       public (ExecutionStatus status, List<AlbumDTO>? albumDTOs) GetFilteredAlbums(AlbumsFilter filter)
+        {
+            try
+            {
+                List<Album> albums = _albumsRepository.GetFilteredAlbums(filter);
 
-        public (ExecutionStatus status, AlbumDTO? albumDTO) AddAlbum(AlbumDTO albumDTO)
+                if (!albums.Any())
+                {
+                    return (ExecutionStatus.NOT_FOUND, null);
+                }
+
+                return (ExecutionStatus.SUCCESS, albums.Select(a => mapToAlbumDTO(a))
+                                                       .ToList());
+            }
+            catch (Exception ex)
+            {
+                _logger.Log(LogLevel.Error, $"******{ex.Message}*******");
+                return (ExecutionStatus.INTERNAL_SERVER_ERROR, null);
+            }
+
+        }    
+    public (ExecutionStatus status, AlbumDTO? albumDTO) AddAlbum(AlbumDTO albumDTO)
         {
             try
             {

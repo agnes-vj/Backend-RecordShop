@@ -28,7 +28,7 @@ namespace RecordShop.Controllers
                 _ => StatusCode(500, "Internal Server Error. Try again Later")
             };
         }
-            
+
         [HttpGet("{id}")]
         public IActionResult GetAlbum(int id)
         {
@@ -43,6 +43,25 @@ namespace RecordShop.Controllers
                 _ => StatusCode(500, "Internal Server Error. Try again Later")
             };
 
+        }
+        [HttpGet("filter")]
+        public IActionResult GetFilteredAlbums(
+                                                [FromQuery] string? title,
+                                                [FromQuery] string? artist,
+                                                [FromQuery] int? releaseDate,
+                                                [FromQuery] int? genre
+                                              )
+        {
+            var filter = new AlbumsFilter { Title = title, ArtistName = artist, ReleaseYear = releaseDate, MusicGenre = genre };
+            var response = _albumsService.GetFilteredAlbums(filter);
+            List<AlbumDTO> albums = response.albumDTOs;
+            return response.status switch
+            {
+                ExecutionStatus.SUCCESS => Ok(albums),
+                ExecutionStatus.INTERNAL_SERVER_ERROR => StatusCode(500, "Internal Server Error. Try again Later"),
+                ExecutionStatus.NOT_FOUND => NotFound("No Albums Found"),
+                _ => StatusCode(500, "Internal Server Error. Try again Later")
+            };
         }
         [HttpPost]
         public IActionResult PostAlbum([FromBody] AlbumDTO albumDTO)

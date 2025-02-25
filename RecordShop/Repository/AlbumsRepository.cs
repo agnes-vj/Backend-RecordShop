@@ -12,7 +12,7 @@ namespace RecordShop.Repository
         public Album UpdateAlbum(Album album);
         public Album ReplaceAlbum(Album newAlbum);
         public void DeleteAlbum(Album album);
-
+        public List<Album> GetFilteredAlbums(AlbumsFilter filter);
     }
     public class AlbumsRepository : IAlbumsRepository
     {
@@ -28,7 +28,30 @@ namespace RecordShop.Repository
                              .Include(album => album.AlbumArtist)
                              .ToList();     
         }
+        public List<Album> GetFilteredAlbums(AlbumsFilter filter)
+        {
+            var query = _dbContext.Albums
+                                         .Include (album => album.AlbumArtist)
+                                         .AsQueryable();
+            if (! string.IsNullOrEmpty(filter.Title))
+                query = query.Where(albums => albums.Title == filter.Title);
+            if (!string.IsNullOrEmpty(filter.ArtistName))
+            {                
+               string normalisedName = normaliseString(filter.ArtistName);                   
+               query = query.Where(albums => albums.AlbumArtist.Name.ToLower().Replace(" ", "").Trim() == normalisedName);
+            }
+            
+            if (filter.MusicGenre.HasValue)
+                query = query.Where(albums => (int)albums.MusicGenre == filter.MusicGenre);
+            if (filter.ReleaseYear.HasValue)
+                query = query.Where(albums => albums.ReleaseYear == filter.ReleaseYear);
+            return query.ToList();
 
+        }
+        private string normaliseString(string input)
+        {
+            return input.Trim().ToLowerInvariant().Replace(" ", "");
+        }
         public Album? FindAlbumById(int id)
         {
             return _dbContext.Albums.Include(album => album.AlbumArtist).FirstOrDefault(album => album.Id == id);
